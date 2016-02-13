@@ -1,4 +1,5 @@
 //model for tic tac toe
+"use strict";
 
 
 
@@ -7,20 +8,20 @@
  * @param {number} row - number of rows in table
  * @param {number} col - number of columns in each row
 **/
-function Model(row,col){
-		this.row = row;
-		this.col = col;
-		var players = [];
-		this.playerTurnIndex = players.length();
+function Model(rows,cols){
+		this.rows = rows;
+		this.cols = cols;
+		this.players = [];
+		this.playerTurnIndex = players.length;
 		this.numOfMoves = 0;
 		this.board = [];
-		for(var i=0;i<row;i++){
+		for(var i=0;i<rows;i++){
 			this.board.push([]);
-			for(j=0;j<col;j++){
+			for(var j=0;j<cols;j++){
 				this.board[i].push([""]);
 			}
 		}
-}
+};
 
 /**
  * adds a new player to the game by pushing to the players array
@@ -29,8 +30,7 @@ function Model(row,col){
 
 Model.prototype.addPlayer = function(str){
 	this.players.push(str);
-	this.playerTurnIndex = players.length();
-}
+};
 
 /**
  * returns true when "cell" at index [row][col] is empty
@@ -39,9 +39,9 @@ Model.prototype.addPlayer = function(str){
  **/
 
 Model.prototype.isValidMove = function(row,col){
-	if(this.board[row][col] == ""){return true}
-		else{return false}
-}
+	if(this.board[row][col] == "" && row >= 0 && col >= 0){return true;}
+		else{return false;}
+};
 
 /**
  * if the player's move is valid, updates board in model and updates whose turn it is
@@ -60,47 +60,55 @@ Model.prototype.makeMove = function(row,col){
 		else{
 			this.playerTurnIndex = 0;
 		} 
- }
+ };
 
  /**
   * checks for win (horizontal,vertical,diagonal)
+  * @return {string} 
  **/
 
  Model.prototype.playerWin = function(){
 
- 	for(var player in players){
+ 	for(var p=0;p<=this.players.length;p){
  		
- 		for(vari=0;i<this.row;i++){
+ 		for(var i=0;i<this.row;i++){
  			//check horizontal
- 			if(this.board[i][0] == player && this.board[i][1] == player && this.board[i][2] == player){
+ 			if(this.board[i][0] == this.players[p] && this.board[i][1] == this.players[p] && this.board[i][2] == this.players[p]){
  				//winner
- 				return player;
+ 				return this.players[p];
  			}
  			//check vertical	
-			if(this.board[0][i] == player && this.board[1][i] == player && this.board[2][i]){
-				return player;
+			if(this.board[0][i] == this.players[p] && this.board[1][i] == this.players[p] && this.board[2][i]){
+				return this.players[p];
 			}
 		}
 		//check diagonal 
-		if(this.board[0][0] == player && this.board[1][1] == player && this.board[2][2] == player){
-			return player;
+		if(this.board[0][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[2][2] == this.players[p]){
+			return this.players[p];
 		}
-		if(this.board[2][0] == player && this.board[1][1] == player && this.board[0][2] == player){
-			return player;
+		if(this.board[2][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[0][2] == this.player[p]){
+			return this.players[p];
+		}
+		else{
+			return "";
 		}
 
  	}
- }
+ };
 
  /**
   * true when there is a draw (the board is full and there is no winner)
+  *@return {boolean}
  **/
 
 Model.prototype.isDraw = function(){
-	if(this.numOfMoves > 9 && !(playerWin()){
+	if(this.numOfMoves = 9 && !(this.playerWin())){
 		return true;
 	}
-}
+	else{
+		return false;
+	}
+};
 
 /**
  * resets the game by calling to the Model function which sets
@@ -112,7 +120,7 @@ Model.prototype.isDraw = function(){
 Model.prototype.newGame = function(rows,cols){
 	Model(rows,cols);
 	//reset view
-}
+};
 
 /**
  * returns player at a given row and column
@@ -122,10 +130,13 @@ Model.prototype.newGame = function(rows,cols){
 
 
 Model.prototype.getPlayer = function(row,col){
-	if(!(this.board[row][col] == ""){
-		return this.board[row][col];
-	}
-}
+	return this.board[row][col];
+};
+
+
+
+
+
 
 
 
