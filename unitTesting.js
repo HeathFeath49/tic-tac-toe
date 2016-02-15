@@ -11,7 +11,9 @@ for(var i=0; i<gameState.length;i++){
 	boardCopy.push(gameState[i]);
 
 }
-
+boardCopy[0].splice(0,1);
+boardCopy[0].splice(0,1);
+console.log(boardCopy[0][0]);
 //console.log(boardCopy);//should return [[1,2,3],[4,5,6],[7,8,9]];
 ///////////////////////////////////////////
 
@@ -63,12 +65,12 @@ Model.prototype.isValidMove = function(row,col){
 /////////////////////////////////////////////
 
 /////////////////////////////////////////////
-//Tested: Failed
+//Tested: Passed
 
 Model.prototype.makeMove = function(row,col){
-	//if(this.isValidMove(row,col)){
+	if(this.isValidMove(row,col)){
 		//update board array
-		this.board[row][col] = players[playerTurnIndex];
+		this.board[row][col] = this.players[this.playerTurnIndex];
 		this.numOfMoves += 1;
 		console.log('got here');
 		if(this.playerTurnIndex === 0){
@@ -77,7 +79,8 @@ Model.prototype.makeMove = function(row,col){
 		else{
 			this.playerTurnIndex = 0;
 		} 
- };
+	}
+};
  
  //m.makeMove(0,0);
  //console.log(m.board[0][0]);
@@ -86,10 +89,10 @@ Model.prototype.makeMove = function(row,col){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Tested: Passed
+//Tested: Failed
  Model.prototype.playerWin = function(){
 
- 	for(var p=0;p<=this.players.length;p++){
+ 	for(var p=0;p<this.players.length;p++){
  		
  		for(var i=0;i<this.rows;i++){
  			//check horizontal
@@ -97,57 +100,80 @@ Model.prototype.makeMove = function(row,col){
  			if(this.board[i][0] == this.players[p] && this.board[i][1] == this.players[p] && this.board[i][2] == this.players[p]){
  				//winner
  				return this.players[p];
+ 				break;
  			}
  			//check vertical
  			//Tested: Passed	
 			if(this.board[0][i] == this.players[p] && this.board[1][i] == this.players[p] && this.board[2][i]){
 				return this.players[p];
+				break;
 			}
 		}
 		//check diagonal
 		//Tested: Passed 
 		if(this.board[0][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[2][2] == this.players[p]){
 			return this.players[p];
+			break;
 		}
 		if(this.board[2][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[0][2] == this.players[p]){
 			return this.players[p];
+			break;
 		}
  	}
- 	return "";
+ 	return false;
  };
 
 
-m.board[0][2] = m.players[0];
+/*m.board[0][2] = m.players[0];
 m.board[1][2] = m.players[1];
-m.board[2][2] = m.players[0];
-console.log(m.playerWin());
+m.board[2][2] = m.players[0];*/
+
+
+m.board[0][0] = m.players[1];
+m.board[0][1] = m.players[0];
+m.board[0][2] = m.players[1];
+
+m.board[1][0] = m.players[1];
+m.board[1][1] = m.players[0];
+m.board[1][2] = m.players[0];
+
+m.board[2][0] = m.players[0];
+m.board[2][1] = m.players[1];
+m.board[2][2] = m.players[1];
+//console.log(m.playerWin());
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////
 //Tested:
 Model.prototype.isDraw = function(){
-	if(this.numOfMoves = 9 && (this.playerWin() === "")){
+	var check = this.playerWin();
+	if(this.numOfMoves = 9 && (check === false)){
 		return true;
 	}
 	else{
 		return false;
 	}
 };
-m.board[0][0] = m.players[0];
-m.board[0][1] = m.players[1];
-m.board[0][2] = m.players[0];
-m.board[1][0] = m.players[0];
-m.board[1][1] = m.players[1];
-m.board[1][2] = m.players[1];
-m.board[2][0] = m.players[1];
-m.board[2][1] = m.players[0];
-m.board[2][2] = m.players[0];
-m.numOfMoves = 9;
+m.board[0][0] = m.players[1];
+m.board[0][1] = m.players[0];
+m.board[0][2] = m.players[1];
+
+m.board[1][0] = m.players[1];
+m.board[1][1] = m.players[0];
+m.board[1][2] = m.players[0];
+
+m.board[2][0] = m.players[0];
+m.board[2][1] = m.players[1];
+m.board[2][2] = m.players[1];
+
+m.numOfMoves += 9;
+
 
 //console.log(m.isDraw()); //return true
 /////////////////////////////////////////
 
 ////////////////////////////////////////
+//Tested:
 Model.prototype.newGame = function(rows,cols){
 	Model(rows,cols);
 	//reset view
@@ -155,7 +181,21 @@ Model.prototype.newGame = function(rows,cols){
 /////////////////////////////////////////
 
 ///////////////////////////////////////////
+//Tested:
 Model.prototype.getPlayer = function(row,col){
 	return this.board[row][col];
 };
 ///////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
