@@ -40,7 +40,7 @@ Model.prototype.addPlayer = function(str){
  **/
 
 Model.prototype.isValidMove = function(row,col){
-	if(this.board[row][col] === ""){
+	if(this.board[row][col] == ""){
 		return true;
 	}
 	else {
