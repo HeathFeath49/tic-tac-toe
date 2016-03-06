@@ -33,19 +33,37 @@ function gameOver(){
 
 function minMax(board,maxPlayer){
 	var check = gameOver();
+	var maxVal = -Infinity;
+	var minVal = Infinity;
+	var predictedOutcome;
+
 	//base case: if there is a winner or a draw
 	if(!(check === false)){
-		return check;
+		return maxVal;
 	}
-	var newBoard = copyBoard(board);
-	var newGame = new Model(this.rows,this.cols);
-	newGame.board = newBoard;
+
 	//recursion
 	for(var r=0;r<=this.rows;r++){
 		for(var c=0;c<=this.cols;c++){
-					
-			
+			//pre recursion
+			var boardCopy = copyBoard(this.board);
+			var newGame = new Model(this.rows,this.cols);
+			newGame.board = boardCopy;
+			newGame.makeMove(r,c);
 
+			//recursion
+			if(maxPlayer === true){
+				predictedOutcome = minMax(newGame.board,false);
+				if(predictedOutcome > maxVal){
+					maxVal = predictedOutcome;
+				}
+			}
+			else{
+				predictedOutcome = minMax(newGame.board,true);
+				if(predictedOutcome < minVal){
+					minVal = predictedOutcome;
+				}
+			}
 		}
 	}
 }

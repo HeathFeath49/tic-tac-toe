@@ -82,41 +82,51 @@ Model.prototype.makeMove = function(row,col){
 
  Model.prototype.playerWin = function(){
 
- 	for(var p=0;p<=this.players.length;p++){
+ 	for(var p=0;p<this.players.length;p++){
+ 		//check horizontal
+ 		if(this.board[0][0] == this.players[p] && this.board[0][1] == this.players[p] && this.board[0][2] == this.players[p]){
+ 			return this.players[p];
+ 		}
+ 		if(this.board[1][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[1][2] == this.players[p]){
+ 			return this.players[p];
+ 		}
+ 		if(this.board[2][0] == this.players[p] && this.board[2][1] == this.players[p] && this.board[2][2] == this.players[p]){
+ 			return this.players[p];
+ 		}
+
+ 		//check vertical
+ 		if(this.board[0][0] == this.players[p] && this.board[1][0] == this.players[p] && this.board[2][0] == this.players[p]){
+ 			return this.players[p];
+ 		}
+ 		if(this.board[0][1] == this.players[p] && this.board[1][1] == this.players[p] && this.board[2][1] == this.players[p]){
+ 			return this.players[p];
+ 		}
+ 		if(this.board[0][2] == this.players[p] && this.board[1][2] == this.players[p] && this.board[2][2] == this.players[p]){
+ 			return this.players[p];
+ 		}
+
+ 		//check diagonal
+ 		if(this.board[2][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[0][2] == this.players[p]){
+ 			return this.players[p];
+ 		}
+ 		if(this.board[0][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[2][2] == this.players[p]){
+ 			return this.players[p];
+ 		}
  		
- 		for(var i=0;i<this.row;i++){
- 			//check horizontal
- 			if(this.board[i][0] == this.players[p] && this.board[i][1] == this.players[p] && this.board[i][2] == this.players[p]){
- 				//winner
- 				return this.players[p];
- 			}
- 			//check vertical	
-			if(this.board[0][i] == this.players[p] && this.board[1][i] == this.players[p] && this.board[2][i]){
-				return this.players[p];
-			}
-		}
-		//check diagonal 
-		if(this.board[0][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[2][2] == this.players[p]){
-			return this.players[p];
-		}
-		if(this.board[2][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[0][2] == this.player[p]){
-			return this.players[p];
-		}
-		else{
-			return "";
-		}
+ 			
+ 		
 
  	}
- };
+ 	return "";
+ }
 
  /**
   * true when there is a draw (the board is full and there is no winner)
   *@return {boolean}
  **/
-
 Model.prototype.isDraw = function(){
 	var check = this.playerWin();
-	if(this.numOfMoves = 9 && (check === false)){
+	if((this.numOfMoves === 9) && (check === "")){
 		return true;
 	}
 	else{
