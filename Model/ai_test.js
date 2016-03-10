@@ -1,4 +1,4 @@
-//mod el for tic tac toe
+//model for tic tac toe
 "use strict";
 
 
@@ -19,7 +19,7 @@ function Model(rows,cols){
 		for(var i=0;i<rows;i++){
 			this.board.push([]);
 			for(var j=0;j<cols;j++){
-				this.board[i].push("");
+				this.board[i].push([""]);
 			}
 		}
 };
@@ -47,10 +47,7 @@ Model.prototype.isValidMove = function(row,col){
 		return false;
 	}
 };
-var b = new Model(3,3);
-b.addPlayer("X");
-b.board[0][0] = "X";
-console.log(b.isValidMove(0,1));
+
 
 /**
  * if the player's move is valid, updates board in model and updates whose turn it is
@@ -83,8 +80,7 @@ Model.prototype.makeMove = function(row,col){
 };
 
 
-
- /** 
+ /**
   * checks for win (horizontal,vertical,diagonal)
   * @return {string} 
  **/
@@ -156,7 +152,7 @@ Model.prototype.newGame = function(rows,cols){
 
 /**
  * returns player at a given row and column
- * @param {number} row - number of row on board
+ * @param {number} row - number  of row on board
  * @param {number} col - number of column in row
 **/
 
@@ -176,19 +172,171 @@ Model.prototype.notifyOfChanges = function(type){
 }
 
 
-/*var blah = new Model(3,3);
-blah.addPlayer("X")
+//ai testing
+//Perfect AI for Tic Tac Toe 
+//Recursive Algorithm
 
 
-function someFunc(m){
-	for(var r=0;r<=m.rows;r++){
-		for(var c=0;c<=m.cols;c++){
-			if(m.makeMove(r,c) == "no move"){
-				break;
+function copyModel(model){
+	function copyBoard(){
+    	var copy = [];
+    	model.board.forEach(function(ele){
+        	copy.push(ele.slice());
+    	})
+    	return copy;
+	}
+	var m = new Model(model.rows,model.cols);
+	m.board = copyBoard(model);
+	m.players = model.players;
+	m.changeListeners = model.changeListeners;
+	m.numOfMoves = model.numOfMoves;
+	m.playerTurnIndex = model.playerTurnIndex;
+
+	return m;
+
+}
+
+
+//board holding game with all player positions or lack of
+//maxPlayer is a boolean
+var minVal = Infinity;
+var maxVal = -Infinity;
+function minMax(game,maxPlayer){
+	var predictedOutcome;
+	
+	
+	function gameOver(){
+		var outcome;
+		if(game.isDraw()){
+			outcome = 0;
+			return outcome;
+		}
+		var winner = game.playerWin();
+
+		if(!(winner === "")){
+			if(winner === game.players[0]){
+				outcome = 1;
+				return outcome;
+			}
+			else{
+				outcome = -1;
+				return outcome;
+			}
+		}
+		return false
+	} 
+
+	
+
+	//base case: if there is a winner or a draw
+	var check = gameOver();
+	if(!(check === false)){
+		return check;
+
+	}
+
+
+	//recursion
+	for(var r=0;r<=game.rows;r++){
+		for(var c=0;c<=game.cols;c++){
+			//pre recursion
+			
+			/*console.log("row:" + r);
+			console.log("col:" + c);*/
+			var newGame = copyModel(game);
+			
+
+			if(newGame.makeMove(r,c) == "no move"){
+				continue;
+			}
+			
+
+			//recursion
+			if(maxPlayer === true){
+				/*console.log('got here');*/
+				predictedOutcome = minMax(newGame,false);
+				if(predictedOutcome > maxVal){
+					maxVal = predictedOutcome;
+				}
+			}
+			else{
+				predictedOutcome = minMax(newGame,true);
+				//console.log(predictedOutcome);
+				if(predictedOutcome < minVal){
+					minVal = predictedOutcome;
+				}
 			}
 		}
 	}
 }
 
-someFunc(blah);
-console.log(blah.board);*/
+var m = new Model(3,3);
+m.addPlayer("X");
+m.addPlayer("O");
+
+m.board[0][0] = "" ;
+m.board[0][1] = "";
+m.board[0][2] = "";
+//
+m.board[1][0] = "";
+m.board[1][1] = m.players[0];
+m.board[1][2] = "";
+//
+m.board[2][0] = "";
+m.board[2][1] = "";
+m.board[2][2] = m.players[0];
+
+m.numOfMoves += 3;
+console.log(minMax(m,true));
+
+/*//returns 1
+//Test: Passed
+m.board[0][0] = m.players[1];
+m.board[0][1] = m.players[0];
+m.board[0][2] = m.players[0];
+//
+m.board[1][0] = "";
+m.board[1][1] = m.players[0];
+m.board[1][2] = m.players[1];
+//
+m.board[2][0] = "";
+m.board[2][1] = m.players[0];
+m.board[2][2] = m.players[1];
+//m.numOfMoves += 7;
+
+console.log(minMax(m,true));
+
+//returns -1
+//Test: Passed 
+m.board[0][0] = m.players[1];
+m.board[0][1] = m.players[0];
+m.board[0][2] = "";
+//
+m.board[1][0] = "";
+m.board[1][1] = m.players[1];
+m.board[1][2] = m.players[0];
+//
+m.board[2][0] = "";
+m.board[2][1] = "";
+m.board[2][2] = m.players[1];
+//m.numOfMoves += 5;
+
+console.log(minMax(m,true));
+
+//returns 0
+//Test:
+
+m.board[0][0] = m.players[0];
+m.board[0][1] = m.players[1];
+m.board[0][2] = m.players[0];
+//
+m.board[1][0] = m.players[0];
+m.board[1][1] = m.players[1];
+m.board[1][2] = m.players[0];
+//
+m.board[2][0] = m.players[1];
+m.board[2][1] = m.players[0];
+m.board[2][2] = m.players[1];
+m.numOfMoves += 9;
+
+console.log(minMax(m,true));*/

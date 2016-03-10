@@ -36,7 +36,6 @@ function Model(rows,cols){
 };
 
 var m = new Model(3,3);
-//console.log(m);
 
 //////////////////////////////////////////////
 //Tested: Passed
@@ -80,11 +79,18 @@ Model.prototype.makeMove = function(row,col){
 			this.playerTurnIndex = 0;
 		}
 	}
+	else{
+		return false;
+	}
 };
+
  
- //m.makeMove(0,0);
- //console.log(m.board[0][0]);
- //console.log(m.playerTurnIndex);
+ 
+ m.board[1][1] = "X";
+ console.log(m.board[1][1]);
+//console.log(m.isValidMove(0,1));
+ //console.log(m.board);
+ //console.log(m.isValidMove(0,0));
 //////////////////////////////////////////////
 
 
@@ -129,20 +135,15 @@ Model.prototype.playerWin = function(){
  	}
  	return "";
  }
-/*
 
-m.board[0][0] = m.players[1];
-m.board[0][1] = m.players[1];
-m.board[0][2] = m.players[1];
 
-console.log(m.playerWin());*/
+//console.log(m.playerWin());
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////
 //Tested: Passed
 Model.prototype.isDraw = function(){
 	var check = this.playerWin();
-	console.log(check);
 	if((this.numOfMoves === 9) && (check === "")){
 		return true;
 	}
@@ -151,22 +152,19 @@ Model.prototype.isDraw = function(){
 	}
 };
 /*m.board[0][0] = m.players[0];
-m.board[0][1] = m.players[0];
-m.board[0][2] = m.players[1];
-
-m.board[1][0] = "";
+m.board[0][1] = m.players[1];
+m.board[0][2] = m.players[0];
+//
+m.board[1][0] = m.players[0];
 m.board[1][1] = m.players[1];
 m.board[1][2] = m.players[0];
-
-m.board[2][0] = "";
-m.board[2][1] = "";
+//
+m.board[2][0] = m.players[1];
+m.board[2][1] = m.players[0];
 m.board[2][2] = m.players[1];
-
-m.numOfMoves += 5;
-console.log(m.numOfMoves);*/
-
-
-console.log(m.isDraw()); //return true
+m.numOfMoves = 9;
+*/
+//console.log(m.isDraw()); //return true
 /////////////////////////////////////////
 
 ////////////////////////////////////////
