@@ -1,6 +1,12 @@
 //model for tic tac toe
 "use strict";
 
+//web worker event handler
+self.onmessage(function(e){
+	console.log('recieved message from main script');
+	//var revertModel = JSON.parse(e.data);
+	//console.log(revertModel);
+})
 
 
 /**
@@ -12,8 +18,8 @@ function Model(rows,cols){
 		this.rows = rows;
 		this.cols = cols;
 		this.players = [];
-		this.playerTurnIndex = 0;
 		this.numOfMoves = 0;
+		this.playerTurnIndex = 0;
 		this.board = [];
 		this.myChangeListeners = [];
 		for(var i=0;i<rows;i++){
@@ -40,6 +46,7 @@ Model.prototype.addPlayer = function(str){
  **/
 
 Model.prototype.isValidMove = function(row,col){
+
 	if(this.board[row][col] == ""){
 		return true;
 	}
@@ -56,29 +63,25 @@ Model.prototype.isValidMove = function(row,col){
 **/
 
 Model.prototype.makeMove = function(row,col){
+	
 	if(this.isValidMove(row,col)){
 		//update board array
 		this.board[row][col] = this.players[this.playerTurnIndex];
 		this.numOfMoves += 1;
+		
 
 		//notify "subscribers" to change!
 		for(var s=0; s<this.myChangeListeners.length;s++){
 			var thisView = this.myChangeListeners[s];
 			thisView.setCellText(row,col,this.players[this.playerTurnIndex]);
 		}
+		this.playerTurnIndex = this.numOfMoves % this.players.length;
 
-		if(this.playerTurnIndex !== this.players.length-1){
-			this.playerTurnIndex += 1;
-		}
-		else{
-			this.playerTurnIndex = 0;
-		}
 	}
 	else{
 		return "no move";
 	}
 };
-
 
  /**
   * checks for win (horizontal,vertical,diagonal)
@@ -199,99 +202,140 @@ function copyModel(model){
 
 //board holding game with all player positions or lack of
 //maxPlayer is a boolean
-var minVal = Infinity;
-var maxVal = -Infinity;
-function minMax(game,maxPlayer){
-	var predictedOutcome;
-	
-	
-	function gameOver(){
-		var outcome;
-		if(game.isDraw()){
-			outcome = 0;
+
+function gameOver(game){
+	var outcome;
+	if(game.isDraw()){
+		outcome = 0;
+		return outcome;
+	}
+	var winner = game.playerWin();
+
+	if(!(winner === "")){
+		if(winner === game.players[0]){
+			outcome = 1;
 			return outcome;
 		}
-		var winner = game.playerWin();
-
-		if(!(winner === "")){
-			if(winner === game.players[0]){
-				outcome = 1;
-				return outcome;
-			}
-			else{
-				outcome = -1;
-				return outcome;
-			}
+		else{
+			outcome = -1;
+			return outcome;
 		}
-		return false
-	} 
+	}
+	return false
+} 
+
+var result = {
+	score:null,
+	row:null,
+	col:null
+};
+
+var bestMaxResultSoFar = {
+	score: -Infinity
+};
+
+var bestMinResultSoFar = {
+	score: Infinity
+}
+
+function minMax(game,maxPlayer,ai){
+	/*console.log(game.board);*/
+	var predictedOutcome;
 
 	
-
+	
 	//base case: if there is a winner or a draw
-	var check = gameOver();
+	var check = gameOver(game);
+
 	if(!(check === false)){
-		return check;
+		result['score'] = check;
+		
+		return result;
 
 	}
+	else{
 
 
-	//recursion
-	for(var r=0;r<=game.rows;r++){
-		for(var c=0;c<=game.cols;c++){
-			//pre recursion
-			
-			/*console.log("row:" + r);
-			console.log("col:" + c);*/
-			var newGame = copyModel(game);
-			
+		//recursion
+		for(var r=0;r<game.rows;r++){
+			for(var c=0;c<game.cols;c++){
+				//pre recursion
+				result['row'] = r;
+				result['col'] = c;
+				/*console.log("row:" + r);
+				console.log("col:" + c);*/
+				var newGame = copyModel(game);
+				
 
-			if(newGame.makeMove(r,c) == "no move"){
-				continue;
-			}
-			
-
-			//recursion
-			if(maxPlayer === true){
-				/*console.log('got here');*/
-				predictedOutcome = minMax(newGame,false);
-				if(predictedOutcome > maxVal){
-					maxVal = predictedOutcome;
+				if(newGame.makeMove(r,c) == "no move"){
+					continue;
 				}
-			}
-			else{
-				predictedOutcome = minMax(newGame,true);
-				//console.log(predictedOutcome);
-				if(predictedOutcome < minVal){
-					minVal = predictedOutcome;
+				//console.log(game.board);
+
+				
+
+				//recursion
+				if(maxPlayer){
+					
+					predictedOutcome = minMax(newGame,false);
+					
+					if(predictedOutcome['score'] > bestMaxResultSoFar['score']){
+						
+						bestMaxResultSoFar['score'] = predictedOutcome['score'];
+						bestMaxResultSoFar['row'] = result['row'];
+						bestMaxResultSoFar['col'] = result['col'];
+				
+					}
+				}
+				else{
+					predictedOutcome = minMax(newGame,true);
+					
+					if(predictedOutcome['score'] < bestMinResultSoFar['score']){
+
+						bestMinResultSoFar['score'] = predictedOutcome['score'];
+						bestMinResultSoFar['row'] = result['row'];
+						bestMinResultSoFar['col'] = result['col'];
+						
+
+					
+					}
 				}
 			}
 		}
+		 
 	}
+	if(ai === 'Max'){
+		return bestMaxResultSoFar;
+	}
+	else{
+		return bestMinResultSoFar;
+	}
+	
 }
 
 var m = new Model(3,3);
 m.addPlayer("X");
 m.addPlayer("O");
-
-m.board[0][0] = "" ;
+/*
+m.board[0][0] = "";
 m.board[0][1] = "";
 m.board[0][2] = "";
 //
 m.board[1][0] = "";
-m.board[1][1] = m.players[0];
+m.board[1][1] = "";
 m.board[1][2] = "";
 //
 m.board[2][0] = "";
 m.board[2][1] = "";
-m.board[2][2] = m.players[0];
+m.board[2][2] = "";
 
-m.numOfMoves += 3;
-console.log(minMax(m,true));
 
-/*//returns 1
+var h = minMax(m,true);
+console.log(h['row']);*/
+
+//returns 1
 //Test: Passed
-m.board[0][0] = m.players[1];
+/*m.board[0][0] = m.players[1];
 m.board[0][1] = m.players[0];
 m.board[0][2] = m.players[0];
 //
@@ -304,7 +348,7 @@ m.board[2][1] = m.players[0];
 m.board[2][2] = m.players[1];
 //m.numOfMoves += 7;
 
-console.log(minMax(m,true));
+console.log(minMax(m,true));*/
 
 //returns -1
 //Test: Passed 
@@ -318,25 +362,27 @@ m.board[1][2] = m.players[0];
 //
 m.board[2][0] = "";
 m.board[2][1] = "";
-m.board[2][2] = m.players[1];
-//m.numOfMoves += 5;
+m.board[2][2] = "";
+m.numOfMoves += 4;
 
-console.log(minMax(m,true));
+
+
+console.log(minMax(m,true,'Min'));;
 
 //returns 0
 //Test:
 
-m.board[0][0] = m.players[0];
+/*m.board[0][0] = m.players[0];
 m.board[0][1] = m.players[1];
 m.board[0][2] = m.players[0];
 //
-m.board[1][0] = m.players[0];
-m.board[1][1] = m.players[1];
+m.board[1][0] = m.players[1];
+m.board[1][1] = m.players[0];
 m.board[1][2] = m.players[0];
 //
-m.board[2][0] = m.players[1];
-m.board[2][1] = m.players[0];
+m.board[2][0] = "";
+m.board[2][1] = m.players[1];
 m.board[2][2] = m.players[1];
-m.numOfMoves += 9;
-
-console.log(minMax(m,true));*/
+m.numOfMoves += 8;*/
+/*m.playerTurnIndex = m.numOfMoves % m.players.length;*/
+/*console.log(minMax(m,true));*/

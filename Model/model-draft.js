@@ -1,4 +1,6 @@
-//model-draft
+//model for tic tac toe
+"use strict";
+
 //break up Model Class
 
 /*function gameClass(){
@@ -6,8 +8,6 @@
 	this.playerTurnIndex = 0;
 	this.numOfMoves = 0;
 }
-
-
 
 
 function boardClass(){
@@ -24,8 +24,6 @@ function boardClass(){
 }
 */
 
-//model for tic tac toe
-"use strict";
 
 
 
@@ -38,8 +36,8 @@ function Model(rows,cols){
 		this.rows = rows;
 		this.cols = cols;
 		this.players = [];
-		this.playerTurnIndex = 0;
 		this.numOfMoves = 0;
+		this.playerTurnIndex = 0;
 		this.board = [];
 		this.myChangeListeners = [];
 		for(var i=0;i<rows;i++){
@@ -66,6 +64,7 @@ Model.prototype.addPlayer = function(str){
  **/
 
 Model.prototype.isValidMove = function(row,col){
+
 	if(this.board[row][col] == ""){
 		return true;
 	}
@@ -74,6 +73,7 @@ Model.prototype.isValidMove = function(row,col){
 	}
 };
 
+
 /**
  * if the player's move is valid, updates board in model and updates whose turn it is
  * @param {number} row - the number of the row on board
@@ -81,26 +81,23 @@ Model.prototype.isValidMove = function(row,col){
 **/
 
 Model.prototype.makeMove = function(row,col){
+	
 	if(this.isValidMove(row,col)){
 		//update board array
 		this.board[row][col] = this.players[this.playerTurnIndex];
 		this.numOfMoves += 1;
+		
 
 		//notify "subscribers" to change!
 		for(var s=0; s<this.myChangeListeners.length;s++){
 			var thisView = this.myChangeListeners[s];
 			thisView.setCellText(row,col,this.players[this.playerTurnIndex]);
 		}
+		this.playerTurnIndex = this.numOfMoves % this.players.length;
 
-		if(this.playerTurnIndex !== this.players.length-1){
-			this.playerTurnIndex += 1;
-		}
-		else{
-			this.playerTurnIndex = 0;
-		}
 	}
 	else{
-		return "";
+		return "no move";
 	}
 };
 
@@ -176,7 +173,7 @@ Model.prototype.newGame = function(rows,cols){
 
 /**
  * returns player at a given row and column
- * @param {number} row - number of row on board
+ * @param {number} row - number  of row on board
  * @param {number} col - number of column in row
 **/
 
@@ -194,6 +191,7 @@ Model.prototype.notifyOfChanges = function(type){
 		this.myChangeListeners[i]({change:type});
 	}
 }
+
 /////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
@@ -218,13 +216,20 @@ function copyModel(model){
 
 }
 
-var n = new Model(3,3);
+/*var n = new Model(3,3);
 n.board[0][0] = "X";
 n.addPlayer('X');
 n.addPlayer('O');
 n.numOfMoves += 9;
 
 var u = copyModel(n);
+*/
+/*var n = new Model(3,3);
+console.log(n.playerTurnIndex);
+n.addPlayer("X");
+n.addPlayer("O");
+n.makeMove(0,0);
 
 
+console.log(n.playerTurnIndex);*/
 
