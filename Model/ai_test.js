@@ -1,5 +1,6 @@
-//model for tic tac toe
 "use strict";
+
+//model for tic tac toe
 
 /*//web worker event handler
 self.onmessage(function(e){
@@ -223,39 +224,39 @@ function gameOver(game){
 	}
 	return false
 }
-var results = {
-	score:null
-};
 
-var bestResults = {
-	score:null
-};
+
+
+
 
 
 function minMax(game,maxPlayer){
-	
-	
-
-
-	var score = gameOver(game);
-	if(maxPlayer){
-		results['score'] = -Infinity;
-	}
-	else{
-		results['score'] = Infinity;
-	}
-
+	var check = gameOver(game);
 	//base case: if there is a winner or a draw
-	if(!(score === false)){
+	if(!(check === false)){
 		//result['score'] = score;
+		var score = [check];
 		return score;
 	}
 	else{
 	
+
+		
+		if(maxPlayer){
+			var bestScore = [-Infinity,'r','c'];
+		}
+		else{
+			var bestScore = [Infinity,'r','c'];
+		}
+
+	
+			
 		//recursion
 		for(var r=0;r<game.rows;r++){
 			for(var c=0;c<game.cols;c++){
 				//pre recursion
+				
+				
 				
 				var newGame = copyModel(game);
 				if(newGame.makeMove(r,c) == "no move"){
@@ -265,27 +266,28 @@ function minMax(game,maxPlayer){
 				
 				if(maxPlayer){
 					
-					results['score'] = minMax(newGame,false);
+					var predict = minMax(newGame,false);
 	
-					if(results['score'] > bestResults['score']){
-						bestResults['score'] = results['score'];
-						bestResults.row = r;
-						bestResults.col = c;
+					if(predict[0] > bestScore[0]){
+						bestScore[0] = predict[0];
+						bestScore[1] = r;
+						bestScore[2] = c;
+			
 						//console.log(bestResults);
 					
 					}
 				}
 				else{
-					results['score'] = minMax(newGame,true);
+					var predict = minMax(newGame,true);
 					
-					if(results['score'] < bestResults['score']){
-						bestResults['score'] = results['score'];
-						bestResults.row = r;
-						bestResults.col = c;
+					if(predict[0] < bestScore[0]){
+						bestScore[0] = predict[0];
+						bestScore[1] = r;
+						bestScore[2] = c;
 					}
 				}
 			}
-		}return bestResults;
+		}return bestScore;
 		 
 	}
 }
@@ -306,13 +308,18 @@ m.board[2][0] = "";
 m.board[2][1] = "";
 m.board[2][2] = "";
 
-
-console.log(m.numOfMoves);
-
+m.makeMove(0,0);
+m.makeMove(1,1);
+m.makeMove(0,1);
+m.makeMove(0,2);
+m.makeMove(2,0);
+m.makeMove(1,0);
+m.makeMove(1,2);
+m.makeMove(2,1);
 
 console.log(m.board);
-console.log(minMax(m,true));
-console.log('done');
+console.log(minMax(m,false));
+
 /*
 m.board[0][0] = "";
 m.board[0][1] = "";
