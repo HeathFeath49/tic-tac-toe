@@ -224,7 +224,7 @@ function gameOver(game){
 	return false
 }
 var results = {
-	score:5
+	score:null
 };
 
 var bestResults = {
@@ -293,6 +293,26 @@ function minMax(game,maxPlayer){
 var m = new Model(3,3);
 m.addPlayer("X");
 m.addPlayer("O");
+
+m.board[0][0] = "";
+m.board[0][1] = "";
+m.board[0][2] = "";
+//
+m.board[1][0] = "";
+m.board[1][1] = "";
+m.board[1][2] = "";
+//
+m.board[2][0] = "";
+m.board[2][1] = "";
+m.board[2][2] = "";
+
+
+console.log(m.numOfMoves);
+
+
+console.log(m.board);
+console.log(minMax(m,true));
+console.log('done');
 /*
 m.board[0][0] = "";
 m.board[0][1] = "";
@@ -329,26 +349,7 @@ console.log(minMax(m,true));*/
 
 //returns -1
 //Test: Passed 
-m.board[0][0] = "";
-m.board[0][1] = "";
-m.board[0][2] = "";
-//
-m.board[1][0] = "";
-m.board[1][1] = "";
-m.board[1][2] = "";
-//
-m.board[2][0] = "";
-m.board[2][1] = "";
-m.board[2][2] = "";
 
-m.makeMove(0,0);
-m.makeMove(0,2);
-m.makeMove(1,0);
-m.makeMove(1,1);
-m.makeMove(0,1);
-console.log(m.board);
-
-console.log(minMax(m,false));;
 
 //returns 0
 //Test:
