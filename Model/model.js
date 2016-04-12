@@ -3,29 +3,29 @@
 
 
 
-/**
+*
  * @constructor
  * @param {number} row - number of rows in table
  * @param {number} col - number of columns in each row
-**/
 function Model(rows,cols){
 		this.rows = rows;
 		this.cols = cols;
 		this.players = [];
-		this.playerTurnIndex = 0;
 		this.numOfMoves = 0;
+		this.playerTurnIndex = 0;
 		this.board = [];
 		this.myChangeListeners = [];
 		for(var i=0;i<rows;i++){
 			this.board.push([]);
 			for(var j=0;j<cols;j++){
-				this.board[i].push("");
+				this.board[i].push([""]);
 			}
 		}
 };
 
 /**
  * adds a new player to the game by pushing to the players array
+*
  * @param {string} str - a string that will represent the player's piece on the board
 **/
 
@@ -40,6 +40,7 @@ Model.prototype.addPlayer = function(str){
  **/
 
 Model.prototype.isValidMove = function(row,col){
+
 	if(this.board[row][col] == ""){
 		return true;
 	}
@@ -47,10 +48,7 @@ Model.prototype.isValidMove = function(row,col){
 		return false;
 	}
 };
-var b = new Model(3,3);
-b.addPlayer("X");
-b.board[0][0] = "X";
-console.log(b.isValidMove(0,1));
+
 
 /**
  * if the player's move is valid, updates board in model and updates whose turn it is
@@ -59,32 +57,27 @@ console.log(b.isValidMove(0,1));
 **/
 
 Model.prototype.makeMove = function(row,col){
+	
 	if(this.isValidMove(row,col)){
 		//update board array
 		this.board[row][col] = this.players[this.playerTurnIndex];
 		this.numOfMoves += 1;
+		
 
 		//notify "subscribers" to change!
 		for(var s=0; s<this.myChangeListeners.length;s++){
 			var thisView = this.myChangeListeners[s];
 			thisView.setCellText(row,col,this.players[this.playerTurnIndex]);
 		}
+		this.playerTurnIndex = this.numOfMoves % this.players.length;
 
-		if(this.playerTurnIndex !== this.players.length-1){
-			this.playerTurnIndex += 1;
-		}
-		else{
-			this.playerTurnIndex = 0;
-		}
 	}
 	else{
 		return "no move";
 	}
 };
 
-
-
- /** 
+ /**
   * checks for win (horizontal,vertical,diagonal)
   * @return {string} 
  **/
@@ -156,7 +149,7 @@ Model.prototype.newGame = function(rows,cols){
 
 /**
  * returns player at a given row and column
- * @param {number} row - number of row on board
+ * @param {number} row - number  of row on board
  * @param {number} col - number of column in row
 **/
 
@@ -175,20 +168,26 @@ Model.prototype.notifyOfChanges = function(type){
 	}
 }
 
+/////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
 
-/*var blah = new Model(3,3);
-blah.addPlayer("X")
 
 
-function someFunc(m){
-	for(var r=0;r<=m.rows;r++){
-		for(var c=0;c<=m.cols;c++){
-			if(m.makeMove(r,c) == "no move"){
-				break;
-			}
+function copyModel(model){
+	function copyBoard(){
+		var copy = [];
+		for(var i=0; i<model.board.length;i++){
+			copy.push(model.board[i]);
 		}
+		return copy;
 	}
-}
+	var m = new Model(model.rows,model.cols);
+	m.board = copyBoard(model);
+	m.players = model.players;
+	m.changeListeners = model.changeListeners;
+	m.numOfMoves = model.numOfMoves;
+	m.playerTurnIndex = model.playerTurnIndex;
 
-someFunc(blah);
-console.log(blah.board);*/
+	return m;
+
+}

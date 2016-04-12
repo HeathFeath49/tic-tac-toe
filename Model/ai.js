@@ -1,6 +1,5 @@
-//Perfect AI for Tic Tac Toe 
+//Perfect AI for Tic\\\\\\\\\\ Tac Toe 
 //Recursive Algorithm
-
 
 function copyModel(model){
 	function copyBoard(){
@@ -22,8 +21,31 @@ function copyModel(model){
 }
 
 
-//board holding game with all player positions or lack of
-//maxPlayer is a boolean
+function gameOver(game){
+	var outcome;
+	if(game.isDraw()){
+		outcome = 0;
+		return outcome;
+	}
+	var winner = game.playerWin();
+
+	if(!(winner === "")){
+		if(winner === game.players[0]){
+			outcome = 1;
+			return outcome;
+		}
+		else{
+			outcome = -1;
+			return outcome;
+		}
+	}
+	return false
+}
+
+
+
+
+
 
 function minMax(game,maxPlayer){
 	var check = gameOver(game);

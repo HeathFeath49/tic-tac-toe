@@ -30,8 +30,10 @@ function View(model,callback){
 View.prototype.setCellText = function(row,col,str){
 	var text = document.createTextNode(str);
 	var cell = row.toString()+col.toString();
+	console.log(cell);
 	document.getElementById(cell).appendChild(text);
 }
+
 
 
 
