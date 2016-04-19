@@ -1,6 +1,6 @@
 "use strict";
 //model class
-
+//Test
 //game rules class
 function gameRulesClass(){
 	this.myChangeListeners = [];
