@@ -3,10 +3,10 @@
 
 
 
-*
- * @constructor
+
+ /** @constructor
  * @param {number} row - number of rows in table
- * @param {number} col - number of columns in each row
+ * @param {number} col - number of columns in each row*/
 function Model(rows,cols){
 		this.rows = rows;
 		this.cols = cols;
