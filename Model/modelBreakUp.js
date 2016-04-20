@@ -78,9 +78,12 @@ gameRulesClass.prototype.playerWin = function(){
 
 
 //player class
-function playerClass(){
+function playerClass(players){
 	this.players = [];
 	this.playerTurnIndex = 0;
+	for(var p=0;p<arguments.length;p++){
+		this.addPlayer(arguments[p]);
+	}
 }
 
 playerClass.prototype.addPlayer = function(str){
@@ -127,3 +130,15 @@ boardClass.prototype.makeMove = function(row,col){
 	}
 };
 
+function ticTacToe(){
+	this.bClass = new boardClass(3,3);
+	this.pClass = new playerClass('X','O');
+	this.gClass = new gameRulesClass();
+}
+
+
+
+var x = new ticTacToe();
+console.log(x.gClass.isValidMove());
+/*x.bClass.makeMove(1,1);
+*/
