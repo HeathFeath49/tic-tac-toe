@@ -1,3 +1,5 @@
+"use strict";
+
 //mod el for tic tac toe
 "use strict";
 
@@ -193,118 +195,38 @@ function copyModel(model){
 }
 
 
-//Perfect AI for Tic\\\\\\\\\\ Tac Toe 
-//Recursive Algorithm
+///////////////////////MAPPER/REDUCE///////////////////////
 
-function copyModel(model){
-	function copyBoard(){
-    	var copy = [];
-    	model.board.forEach(function(ele){
-        	copy.push(ele.slice());
-    	})
-    	return copy;
-	}
-	var m = new Model(model.rows,model.cols);
-	m.board = copyBoard(model);
-	m.players = model.players;
-	m.changeListeners = model.changeListeners;
-	m.numOfMoves = model.numOfMoves;
-	m.playerTurnIndex = model.playerTurnIndex;
+function mapper1(list){
+	list.map(function(obj){
 
-	return m;
-
-}
-
-
-function gameOver(game){
-	var outcome;
-	if(game.isDraw()){
-		outcome = 0;
-		return outcome;
-	}
-	var winner = game.playerWin();
-
-	if(!(winner === "")){
-		if(winner === game.players[0]){
-			outcome = 1;
-			return outcome;
-		}
-		else{
-			outcome = -1;
-			return outcome;
-		}
-	}
-	return false
-}
-
-function minMax(game,maxPlayer,alpha,beta){
-	var check = gameOver(game);
-	//base case: if there is a winner or a draw
-	if(!(check === false)){
-		//result['score'] = score;
-		var score = [check];
-		return score;
-	}
-	else{
-	
-
+		var newObj={};
+		var currentModel = obj.key;
 		
-		if(maxPlayer){
-			var bestScore = [-Infinity,'r','c'];
-		}
-		else{
-			var bestScore = [Infinity,'r','c'];
-		}
 
-	
-			
-		//recursion
-		for(var r=0;r<game.rows;r++){
-			for(var c=0;c<game.cols;c++){
-				//pre recursion
+		for(var r=0;r<currentModel.rows;r++){
+			for(var c=0;c<currentModel.cols;c++){
+				var copyOfModel = copyModel(currentModel);
+				/*console.log(copyOfModel);*/
+				copyOfModel.makeMove(r,c);
+				/*console.log(copyOfModel.board);*/
+				var newKey = JSON.stringify(copyOfModel.board);
+				/*console.log(newKey);*/
+				/*var newValue = JSON.stringify(obj.key.board);*/
+				var newValue = 1;
 				
-				
-				
-				var newGame = copyModel(game);
-				if(newGame.makeMove(r,c) == "no move"){
-					continue;
-				}
-				
-				
-				if(maxPlayer){
-					
-					var predict = minMax(newGame,false);
-	
-					if(predict[0] > bestScore[0]){
-						bestScore[0] = predict[0];
-						bestScore[1] = r;
-						bestScore[2] = c;
-			
-						//console.log(bestResults);
-					
-					}
-				}
-				else{
-					var predict = minMax(newGame,true);
-					
-					if(predict[0] < bestScore[0]){
-						bestScore[0] = predict[0];
-						bestScore[1] = r;
-						bestScore[2] = c;
-					}
-				}
-			}
-		}return bestScore;
-		 
-	}
+				newObj[newKey] = newValue;
+				console.log(newObj);
+				return JSON.stringify(newObj);
+
+
+
+			}		
+		}
+	})
 }
-
-
-
-
-
 
 var m = new Model(3,3);
-m.addPlayer('X','O');
-m.makeMove(1,1);
-console.log(minMax(m,false));
+m.addPlayer('X');
+m.addPlayer('O');
+console.log(mapper1([{key:m,value:""}]));

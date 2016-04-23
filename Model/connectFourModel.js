@@ -3,10 +3,11 @@
 
 
 
-*
+/*
  * @constructor
  * @param {number} row - number of rows in table
  * @param {number} col - number of columns in each row
+ */
 function Model(rows,cols){
 		this.rows = rows;
 		this.cols = cols;
@@ -82,44 +83,92 @@ Model.prototype.makeMove = function(row,col){
   * @return {string} 
  **/
 
- Model.prototype.playerWin = function(){
+ Model.prototype.playerWin = function(num_needed){
+ 	
+ 	for(var r=0;r<this.rows;r++){
+ 		for(var c=0;c<this.cols;c++){
 
- 	for(var p=0;p<this.players.length;p++){
- 		//check horizontal
- 		if(this.board[0][0] == this.players[p] && this.board[0][1] == this.players[p] && this.board[0][2] == this.players[p]){
- 			return this.players[p];
- 		}
- 		if(this.board[1][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[1][2] == this.players[p]){
- 			return this.players[p];
- 		}
- 		if(this.board[2][0] == this.players[p] && this.board[2][1] == this.players[p] && this.board[2][2] == this.players[p]){
- 			return this.players[p];
- 		}
+ 			//check if player in box
+ 			if(!(this.getPlayer(r,c)=='')){
+ 				
+ 				//get player we are working with 
+ 				var currentPlayer = this.getPlayer(r,c);
+ 				var numOfRows = this.rows-1;
+ 				var numOfCols = this.cols-1;
+ 				
+ 				//check if horizontal win is possible
+ 				if((numOfCols-c) >= (num_needed-1)){
+ 					
+ 					var consecutiveNum = 1;
+ 					var sequenceBroken = false;
+ 					//check for win
+ 					while((sequenceBroken === false) && (consecutiveNum !== num_needed)){
+ 						//check next box
+ 						
+ 						if(this.board[r][c+consecutiveNum] == currentPlayer){
+ 							/*console.log(c+consecutiveNum);*/
+							consecutiveNum += 1;
+ 						}
+ 						else{
+ 							/*console.log('here');*/
+ 							sequenceBroken = true;
+ 						}
+					}
 
- 		//check vertical
- 		if(this.board[0][0] == this.players[p] && this.board[1][0] == this.players[p] && this.board[2][0] == this.players[p]){
- 			return this.players[p];
- 		}
- 		if(this.board[0][1] == this.players[p] && this.board[1][1] == this.players[p] && this.board[2][1] == this.players[p]){
- 			return this.players[p];
- 		}
- 		if(this.board[0][2] == this.players[p] && this.board[1][2] == this.players[p] && this.board[2][2] == this.players[p]){
- 			return this.players[p];
- 		}
+ 				}
+ 				//check if vertical win is possible
+ 				if((numOfRows-r) >= (num_needed-1)){
+ 					consecutiveNum = 1;
+ 					sequenceBroken = false;
 
- 		//check diagonal
- 		if(this.board[2][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[0][2] == this.players[p]){
- 			return this.players[p];
- 		}
- 		if(this.board[0][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[2][2] == this.players[p]){
- 			return this.players[p];
- 		}
- 		
- 			
- 		
+ 					//check for win
+ 					while((sequenceBroken === false) && (consecutiveNum !== num_needed)){
+ 						if(this.board[r+consecutiveNum][c] == currentPlayer){
+ 							consecutiveNum += 1;
+ 						}
+ 						else{
+ 							sequenceBroken = true;
+ 						}
+ 					}
+ 					/*if(consecutiveNum == num_needed){
+ 						console.log('player won');
+ 						break;
+ 					}
+ 					else{
+ 						console.log('no winner');
+ 						break;
+ 					}*/
+				}
+				//check if diagonal win possible (left)
 
+				if(c+1 < num_needed){
+					//check for left diag win
+					consecutiveNum = 1;
+					sequenceBroken = false;
+
+					while((sequenceBroken === false) && (consecutiveNum !== num_needed)){
+						//console.log(this.board[r+consecutiveNum][c-consecutiveNum]);
+						if(this.board[r+consecutiveNum][c-consecutiveNum] == currentPlayer){
+							consecutiveNum += 1;
+						}
+						else{
+							sequenceBroken = true;
+						}
+					}
+					if(consecutiveNum == num_needed){
+ 						console.log('player won');
+ 						
+ 					}
+ 					else{
+ 						console.log('no winner');
+ 						
+ 					}
+
+				}
+			}
+
+		}
  	}
- 	return "";
  }
 
  /**
@@ -157,3 +206,18 @@ Model.prototype.newGame = function(rows,cols){
 Model.prototype.getPlayer = function(row,col){
 	return this.board[row][col];
 };
+
+
+var m = new Model(3,3);
+m.addPlayer('X');
+m.addPlayer('O');
+m.board[0][2] = 'O';
+m.board[1][1] = 'O';
+m.board[2][0] = 'O';
+
+//m.board[0][2] = 'X';
+/*m.makeMove(1,2);*/
+//console.log(m.board);
+
+m.playerWin(3);
+

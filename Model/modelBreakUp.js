@@ -133,12 +133,11 @@ boardClass.prototype.makeMove = function(row,col){
 function ticTacToe(){
 	this.bClass = new boardClass(3,3);
 	this.pClass = new playerClass('X','O');
-	this.gClass = new gameRulesClass();
 }
 
 
 
 var x = new ticTacToe();
-console.log(x.gClass.isValidMove());
+console.log();
 /*x.bClass.makeMove(1,1);
 */
