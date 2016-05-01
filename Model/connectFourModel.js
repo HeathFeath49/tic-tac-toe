@@ -41,11 +41,14 @@ Model.prototype.addPlayer = function(str){
  **/
 
 Model.prototype.isValidMove = function(row,col){
+	var bottomRow = this.rows - 1;
 
-	if(this.board[row][col] == ""){
+	if(this.board[row][col] == "" && (row == bottomRow || this.board[row+1][col] != "")){
+		console.log('got here');
 		return true;
 	}
 	else {
+		console.log('h');
 		return false;
 	}
 };
@@ -208,16 +211,24 @@ Model.prototype.getPlayer = function(row,col){
 };
 
 
-var m = new Model(3,3);
+var m = new Model(4,4);
 m.addPlayer('X');
 m.addPlayer('O');
-m.board[0][2] = 'O';
-m.board[1][1] = 'O';
-m.board[2][0] = 'O';
+
+m.isValidMove(3,1);
+m.makeMove(3,1);
+m.makeMove(2,1);
+m.makeMove(0,0);
+m.makeMove(3,0);
+m.makeMove(2,0);
+m.makeMove(1,0);
+m.makeMove(0,0);
+console.log(m.board);
+
 
 //m.board[0][2] = 'X';
 /*m.makeMove(1,2);*/
 //console.log(m.board);
 
-m.playerWin(3);
+/*m.playerWin(3);*/
 

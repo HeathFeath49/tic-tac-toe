@@ -176,12 +176,13 @@ Model.prototype.notifyOfChanges = function(type){
 
 
 function copyModel(model){
+	
 	function copyBoard(){
-		var copy = [];
-		for(var i=0; i<model.board.length;i++){
-			copy.push(model.board[i]);
-		}
-		return copy;
+    	var copy = [];
+    	model.board.forEach(function(ele){
+        	copy.push(ele.slice());
+    	})
+    	return copy;
 	}
 	var m = new Model(model.rows,model.cols);
 	m.board = copyBoard(model);
@@ -194,39 +195,45 @@ function copyModel(model){
 
 }
 
+/*function copyBoard(){
+	var copy = [];
+	for(var i=0; i<model.board.length;i++){
+		copy.push(model.board[i]);
+	}
+	return copy;
+}*/
+
 
 ///////////////////////MAPPER/REDUCE///////////////////////
 
 function mapper1(list){
-	list.map(function(obj){
+	return list.map(function(obj){
 
 		var newObj={};
 		var currentModel = obj.key;
-		
-
 		for(var r=0;r<currentModel.rows;r++){
 			for(var c=0;c<currentModel.cols;c++){
+				/*var parentBoard = JSON.stringify(currentModel.board);*/		
 				var copyOfModel = copyModel(currentModel);
-				/*console.log(copyOfModel);*/
+
 				copyOfModel.makeMove(r,c);
 				/*console.log(copyOfModel.board);*/
 				var newKey = JSON.stringify(copyOfModel.board);
 				/*console.log(newKey);*/
 				/*var newValue = JSON.stringify(obj.key.board);*/
-				var newValue = 1;
+				var newValue = JSON.stringify(currentModel.board);
 				
 				newObj[newKey] = newValue;
-				console.log(newObj);
-				return JSON.stringify(newObj);
-
-
-
+				//console.log(newObj);
 			}		
-		}
+		}return newObj;
 	})
 }
 
 var m = new Model(3,3);
 m.addPlayer('X');
 m.addPlayer('O');
+
+/*var x = JSON.stringify(m.board);*/
+
 console.log(mapper1([{key:m,value:""}]));
