@@ -1,12 +1,10 @@
 //mod el for tic tac toe
 "use strict";
 
-
-
-
  /** @constructor
  * @param {number} row - number of rows in table
- * @param {number} col - number of columns in each row*/
+ * @param {number} col - number of columns in each row
+ **/
 function Model(rows,cols){
 		this.rows = rows;
 		this.cols = cols;
@@ -25,7 +23,6 @@ function Model(rows,cols){
 
 /**
  * adds a new player to the game by pushing to the players array
-*
  * @param {string} str - a string that will represent the player's piece on the board
 **/
 
@@ -114,10 +111,6 @@ Model.prototype.makeMove = function(row,col){
  		if(this.board[0][0] == this.players[p] && this.board[1][1] == this.players[p] && this.board[2][2] == this.players[p]){
  			return this.players[p];
  		}
- 		
- 			
- 		
-
  	}
  	return "";
  }
